@@ -1,36 +1,43 @@
 <?php
 declare(strict_types=1);
 
-require_once('fritzbox.inc');
+require_once './vendor/autoload.php';
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
+use function FritzBox\getServiceData;
+use function FritzBox\soapCall;
+use function FritzBox\soapClient;
+
+require_once('fritzbox.php');
 
 
 
 # user and password
 # - user is optional for default setup; simply set any name
 # - otherwise use FritzBox-User with read/write access
-$user = "admin";
-$pass = "passw";
-
-
+$user = getenv('FRITZBOX_USERNAME');
+$pass = getenv('FRITZBOX_PASSWORD');
 
 # fritz!box soap server
-$base_uri = "https://fritz.box:49443";
+//$base_uri = "http://192.168.0.254:49000/tr64desc.xml";
+$base_uri = "https://192.168.0.254:49443";
 
 # description of services
 $desc = "tr64desc.xml";
 
 # function signatures, variables and its data types
-$scpd = "x_dectSCPD.xml";
+$scpd = "x_tamSCPD.xml";
 
 # function to execute
-$action = "GetNumberOfDectEntries";
+$action = "GetMessageList";
 
 
 
 try
 {
     # receive service description
-    $service = \FritzBox\getServiceData($base_uri, $desc, $scpd);
+    $service = getServiceData($base_uri, $desc, $scpd);
 
     if ($service === false)
     {
@@ -54,10 +61,10 @@ try
     #print_r($stateVars);
 
     # create soap client
-    $client = \FritzBox\soapClient($service);
+    $client = soapClient($service);
 
     # execute action published by service
-    $noOfTelephones = (int)\FritzBox\soapCall($client, $action);
+    $noOfTelephones = (int)soapCall($client, $action);
 
     echo "no of dect telephones: ". $noOfTelephones . PHP_EOL;
 
@@ -65,7 +72,7 @@ try
 
     for($i = 0; $i < $noOfTelephones; $i++)
     {
-        $result = \FritzBox\soapCall($client, $action,
+        $result = soapCall($client, $action,
                         new SoapParam((int)$i, 'NewIndex'));
 
         $line = ($result['NewActive'] != 0) ? "busy" : "open";
@@ -77,4 +84,3 @@ catch(Exception $e)
 {
     echo $e->__toString() . PHP_EOL;
 }
-?>
