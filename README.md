@@ -18,5 +18,7 @@ https://192.168.0.54:49443/tr64desc.xml
 
 https://www.symcon.de/forum/threads/25745-FritzBox-mit-SOAP-auslesen-und-steuern
 
-# CLI-based example
-Query DECT status once and print on STDOUT.
+# Install
+
+ 1. run `composer install`
+ 2. copy .env.example to .env and edit username and password
