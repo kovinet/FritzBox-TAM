@@ -1,0 +1,14 @@
+{
+    "name": "kovinet/fritz-box-tam",
+    "description": "PHP Cli app for communication with Fritz!Box Answering Machine (TAM)",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Borut Kovačec",
+            "email": "borut.kovacec@gmail.com"
+        }
+    ],
+    "require": {
+        "vlucas/phpdotenv": "^4.1"
+    }
+}
