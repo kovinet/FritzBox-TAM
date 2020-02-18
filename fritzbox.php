@@ -30,6 +30,7 @@ function getHTTPSContent($url)
 function getServiceData($base_uri, $desc, $scpd)
 {
     $content = getHTTPSContent($base_uri .'/'. $desc);
+    //print_r($content);exit;
     $xml = @simplexml_load_string($content);
 
     if ($xml === false)
@@ -103,12 +104,9 @@ function soapClient($service)
     # if FritzBox ever moves to version 1.2 or higher
     #$service['soap_version'] = SOAP_1_2;
     $service['ssl_method'] = SOAP_SSL_METHOD_TLS;
-
     $service['stream_context'] = stream_context_create($ctx);
-
     $service['compression'] = SOAP_COMPRESSION_ACCEPT | SOAP_COMPRESSION_GZIP;
-
-    $service['trace'] = false;
+    $service['trace'] = 1;
     $service['exceptions'] = true;
 
     return new \SoapClient(null, $service);
@@ -116,6 +114,18 @@ function soapClient($service)
 
 function soapCall($client, string &$action, ...$arguments)
 {
-    return $client->__soapCall($action, $arguments);
+    try{
+        /** @var \SoapClient $client */
+        $result = $client->__SoapCall($action, $arguments);
+    } catch (\Exception $e) {
+        print_r($client->__getLastRequest());
+        var_dump($client->__getLastRequestHeaders());
+        var_dump($client->__getLastResponse());
+        var_dump($client->__getLastResponseHeaders());
+        echo $e->getMessage() . PHP_EOL;
+        echo $e->getTraceAsString(). PHP_EOL;
+
+        exit;
+    }
+    return $result;
 }
-?>
