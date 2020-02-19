@@ -19,10 +19,11 @@ require_once('fritzbox.php');
 //- otherwise use FritzBox-User with read/write access
 $user = getenv('FRITZBOX_USERNAME');
 $pass = getenv('FRITZBOX_PASSWORD');
+$host = getenv('FRITZBOX_HOST');
 
 //fritz!box soap server
 //$base_uri = "http://192.168.0.254:49000/tr64desc.xml";
-$base_uri = "https://192.168.0.254:49443";
+$base_uri = 'https://192.168.0.254:49443';
 
 //description of services
 $desc = "tr64desc.xml";
@@ -62,15 +63,12 @@ try
     $client = soapClient($service);
 
     //execute action published by service
-    $url = null;
-    $arg = new \stdClass();
-    $arg->NewIndex = 0;
+    //get global information and the specific answering machine
     $list = soapCall($client, $action);
 
-    echo $list;
+    //echo $list;
 
     $action = 'GetMessageList';
-    //result equals to
     $listURL = soapCall($client, $action,
         new SoapParam(1, 'NewIndex'));
 
@@ -86,15 +84,13 @@ try
         throw new \RuntimeException('No messages found.');
     }
 
-
-
     echo "sid: " . $sid . PHP_EOL;
 
     $xml = simplexml_load_string($TAMList);
     if ($xml === false) {
-        echo "Failed loading XML: ";
+        echo 'Failed loading XML: ' . PHP_EOL;
         foreach(libxml_get_errors() as $error) {
-            echo "<br>", $error->message;
+            echo $error->message . PHP_EOL;
         }
     } else {
         $i = 0;
@@ -106,26 +102,7 @@ try
         }
     }
 
-
     echo PHP_EOL;
-
-    //var_dump($list);
-    //var_dump($url);
-
-    /*
-
-    $action = "GetGenericDectEntry";
-
-    for($i = 0; $i < $noOfTelephones; $i++)
-    {
-        $result = soapCall($client, $action,
-                        new SoapParam((int)$i, 'NewIndex'));
-
-        $line = ($result['NewActive'] != 0) ? "busy" : "open";
-
-        echo "name(". $result['NewName'] .") id(". $result['NewID'] .") line(". $line .")" . PHP_EOL;
-    }
-    */
 }
 catch(Exception $e)
 {
