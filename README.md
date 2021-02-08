@@ -5,9 +5,9 @@ App downloads audio recordings from answering machine (TAM) via SOAP API.
 
 * AVM resources:
 
-https://avm.de/service/schnittstellen/
-https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AVM_TR-064_first_steps.pdf
-https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_tam.pdf
+https://avm.de/service/schnittstellen/  
+https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AVM_TR-064_first_steps.pdf  
+https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/x_tam.pdf  
 
 This is just a working test case how to download answering machine messages, it is not meant to be used as a library.
 
